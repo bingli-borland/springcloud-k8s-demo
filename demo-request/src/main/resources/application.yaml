@@ -1,5 +1,15 @@
 server:
   port: 12002
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 30000
+        readTimeout: 60000
+  httpclient:
+    enabled: true # HttpClient的开关
+    max-connections: 200  # 最大连接数
+    max-connections-per-route: 50   # 单个请求路径的最大连接数
 spring:
   application:
     name: demo-request
