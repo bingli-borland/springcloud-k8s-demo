@@ -12,7 +12,6 @@ spec:
       labels:
         run: demo-request
     spec:
-      nodeName: node4
       containers:
         - image: demo-request:1.0
           name: demo-request
