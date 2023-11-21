@@ -1,8 +1,12 @@
 server:
   port: 12001
+  ioMode: NIO
+  bes:
+    keep‑alive‑timeout: -1
+    max‑keep‑alive‑requests: -1
 spring:
   application:
-    name: demo-data
+    name: demo-data-bes
   cloud:
     kubernetes:
       discovery:

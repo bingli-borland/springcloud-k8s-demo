@@ -1,5 +1,9 @@
 server:
   port: 12002
+  ioMode: NIO
+  bes:
+    keep‑alive‑timeout: -1
+    max‑keep‑alive‑requests: -1
 feign:
   client:
     config:
@@ -12,7 +16,7 @@ feign:
     max-connections-per-route: 50   # 单个请求路径的最大连接数
 spring:
   application:
-    name: demo-request
+    name: demo-request-bes
   cloud:
     kubernetes:
       discovery:

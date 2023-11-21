@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: demo-data
+  name: demo-data-bes
   namespace: myes
 spec:
   # 副本数增加为了测试service的负载均衡
   replicas: 1
   selector:
     matchLabels:
-      run: demo-data
+      run: demo-data-bes
   template:
     metadata:
       labels:
-        run: demo-data
+        run: demo-data-bes
     spec:
       containers:
         # 此处自行传到自己的镜像仓库或者使用本地镜像
-        - image: demo-data:1.0
-          name: demo-data
+        - image: demo-data-bes:1.0
+          name: demo-data-bes
           ports:
             - containerPort: 12001
 
@@ -25,15 +25,15 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: demo-data
+  name: demo-data-bes
   namespace: myes
   labels:
-    run: demo-data
+    run: demo-data-bes
 spec:
   type: NodePort
   selector:
-    run: demo-data
+    run: demo-data-bes
   ports:
     - port: 12001
       protocol: TCP
-      nodePort: 31991
+      nodePort: 21991
