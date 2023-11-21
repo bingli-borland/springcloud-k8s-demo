@@ -1,0 +1,10 @@
+server:
+  port: 12002
+spring:
+  application:
+    name: demo-request
+  cloud:
+    kubernetes:
+      discovery:
+        namespaces:
+          - myes

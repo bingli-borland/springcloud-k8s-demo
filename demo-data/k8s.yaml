@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-data
+  namespace: myes
+spec:
+  # 副本数增加为了测试service的负载均衡
+  replicas: 1
+  selector:
+    matchLabels:
+      run: demo-data
+  template:
+    metadata:
+      labels:
+        run: demo-data
+    spec:
+      containers:
+        # 此处自行传到自己的镜像仓库或者使用本地镜像
+        - image: demo-data:1.0
+          name: demo-data
+          ports:
+            - containerPort: 12001
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: demo-data
+  namespace: myes
+  labels:
+    run: demo-data
+spec:
+  type: NodePort
+  selector:
+    run: demo-data
+  ports:
+    - port: 12001
+      protocol: TCP
+      nodePort: 31991

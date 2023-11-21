@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-request
+  namespace: myes
+spec:
+  selector:
+    matchLabels:
+      run: demo-request
+  template:
+    metadata:
+      labels:
+        run: demo-request
+    spec:
+      nodeName: node4
+      containers:
+        - image: demo-request:1.0
+          name: demo-request
+          ports:
+            - containerPort: 12002
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: demo-request
+  namespace: myes
+  labels:
+    run: demo-request
+spec:
+  type: NodePort
+  selector:
+    run: demo-request
+  ports:
+    - port: 12002
+      protocol: TCP
+      nodePort: 31992
