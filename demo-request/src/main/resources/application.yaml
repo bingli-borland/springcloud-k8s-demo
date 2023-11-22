@@ -2,7 +2,6 @@ server:
   port: 12002
   ioMode: NIO
   bes:
-    keep‑alive‑timeout: -1
     max‑keep‑alive‑requests: -1
 feign:
   client:
