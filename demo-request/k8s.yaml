@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: demo-request-bes
+  name: demo-request
   namespace: myes
 spec:
   selector:
     matchLabels:
-      run: demo-request-bes
+      run: demo-request
   template:
     metadata:
       labels:
-        run: demo-request-bes
+        run: demo-request
     spec:
       containers:
-        - image: demo-request-bes:1.0
-          name: demo-request-bes
+        - image: demo-request:1.0
+          name: demo-request
           ports:
             - containerPort: 12002
 
@@ -22,16 +22,16 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: demo-request-bes
+  name: demo-request
   namespace: myes
   labels:
-    run: demo-request-bes
+    run: demo-request
 spec:
   type: NodePort
   selector:
-    run: demo-request-bes
+    run: demo-request
   ports:
     - port: 12002
       protocol: TCP
-      nodePort: 21992
+      nodePort: 31992
       targetPort: 12002
