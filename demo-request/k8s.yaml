@@ -17,6 +17,9 @@ spec:
           name: demo-request-bes
           ports:
             - containerPort: 12002
+          env:
+            - name: JAVA_TOOL_OPTIONS
+              value: "-Dserver.bes.keepAliveTimeout=60"
 
 ---
 kind: Service
