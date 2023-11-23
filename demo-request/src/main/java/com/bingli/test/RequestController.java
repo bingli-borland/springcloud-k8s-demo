@@ -18,6 +18,6 @@ public class RequestController {
 
     @GetMapping("request")
     public ResponseVO data(){
-        return restTemplate.getForObject("http://demo-data-bes.myes:12001/data", ResponseVO.class);
+        return restTemplate.getForObject("http://demo-data.myes:12001/data", ResponseVO.class);
     }
 }
