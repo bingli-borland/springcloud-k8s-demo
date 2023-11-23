@@ -13,7 +13,7 @@ spec:
         run: demo-request-bes
     spec:
       containers:
-        - image: demo-request-bes:1.0
+        - image: demo-request-bes:2.0
           name: demo-request-bes
           ports:
             - containerPort: 12002

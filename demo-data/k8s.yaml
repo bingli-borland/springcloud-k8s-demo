@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         # 此处自行传到自己的镜像仓库或者使用本地镜像
-        - image: demo-data-bes:1.0
+        - image: demo-data-bes:2.0
           name: demo-data-bes
           ports:
             - containerPort: 12001

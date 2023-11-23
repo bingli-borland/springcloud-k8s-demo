@@ -12,7 +12,7 @@
 setlocal
 
 set groupId=com.bes.appserver
-set version=9.5.2.012
+set version=9.5.2.014
 
 set "libDir=%cd%/lib"
 if not exist "%libDir%" (
