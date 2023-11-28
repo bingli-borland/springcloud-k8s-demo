@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opengauss
+  namespace: myes
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: opengauss
+  template:
+    metadata:
+      labels:
+        run: opengauss
+    spec:
+      containers:
+        # 此处自行传到自己的镜像仓库或者使用本地镜像, 默认数据库：postgres
+        - image: enmotech/opengauss:5.0.0
+          name: opengauss
+          securityContext:
+            privileged: true
+          ports:
+            - containerPort: 5432
+          env:
+            - name: GS_PASSWORD
+              value: "Enmo@123"
+
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: opengauss
+  namespace: myes
+  labels:
+    run: opengauss
+spec:
+  type: NodePort
+  selector:
+    run: opengauss
+  ports:
+    - port: 5432
+      protocol: TCP
+      nodePort: 35432
+      targetPort: 5432
+
