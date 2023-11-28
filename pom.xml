@@ -20,6 +20,8 @@
 <!--        <module>service-provider</module>-->
         <module>demo-data</module>
         <module>demo-request</module>
+        <module>log4j2block</module>
+        <module>log4jtest</module>
 
     </modules>
 
