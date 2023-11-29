@@ -1,0 +1,152 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/instance: rabbitmq
+    app.kubernetes.io/name: rabbitmq
+  name: rabbitmq
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: rabbitmq-secret
+  namespace: rabbitmq
+data:
+  username: YWRtaW4K
+  password: MTIzNDU2Cg==
+type: Opaque
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: rabbitmq
+  namespace: rabbitmq
+  labels:
+    app: rabbitmq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  serviceName: rabbitmq-headless
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+      annotations:
+        prometheus.io/scrape: "true"
+    spec:
+      containers:
+        - name: rabbitmq
+          image: rabbitmq:3.12-management
+          ports:
+            - name: tcp-5672
+              containerPort: 5672
+              protocol: TCP
+            - name: tcp-15672
+              containerPort: 15672
+              protocol: TCP
+            - name: tcp-15692
+              containerPort: 15692
+              protocol: TCP
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: username
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: password
+            - name: RABBITMQ_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: username
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: password
+          resources:
+            limits:
+              cpu: '1'
+              memory: '1Gi'
+            requests:
+              cpu: '200m'
+              memory: '500Mi'
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-headless
+  namespace: rabbitmq
+  labels:
+    app: rabbitmq
+spec:
+  ports:
+    - name: tcp-rabbitmq-5672
+      port: 5672
+      targetPort: 5672
+      nodePort: 32672
+  selector:
+    app: rabbitmq
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-external
+  namespace: rabbitmq
+  labels:
+    app: rabbitmq-external
+spec:
+  ports:
+    - name: http-rabbitmq-external
+      protocol: TCP
+      port: 15672
+      targetPort: 15672
+    - name: http-rabbitmq-metrics
+      protocol: TCP
+      port: 15692
+      targetPort: 15692
+  selector:
+    app: rabbitmq
+  type: ClusterIP
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rabbitmq-ingress
+  namespace: rabbitmq
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: bws
+  rules:
+    - host: rabbitmq.bingli.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: rabbitmq-external
+                port:
+                  number: 15672
+            pathType: Prefix
+            path: /
+    - host: rabbitmq.metrics.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: rabbitmq-external
+                port:
+                  number: 15692
+            pathType: Prefix
+            path: /
+
+
