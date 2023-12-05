@@ -320,6 +320,20 @@ subjects:
 ---
 apiVersion: v1
 data:
+  bws-license: "5133567A644739745A584975626D46745A54314352564D6756464A4A5155774B55484A765A48566A64433530615852735A54314352564D675632566955325679646D5679436C4279623252310A59335175646D567963326C76626A307A4C6A45754D417051636D396B64574E304C6E52356347553955335268626D5268636D516F5132787664575167546D463061585A6C4B51704D61574E6C0A626E4E6C4C6E523563475539524556575255785055453146546C514B5258687761584A354C6D6C7564475679646D4673505445344D7770555A584A744C6E5235634755394D417046654842700A636E6B755A4746305A54304B5258687064433570626E526C636E5A68624430744D5170535A5764706333526C6369356D5A57463064584A6C50554A58557770545A584A7059577775626E56740A596D56795055684B4D6B4974547A564B4E6A5A494C5556485555744F5153315453446451436B31686546526F636D56685A43356A62335675644430744D5170535A5764706333526C6369356B0A5A584E6A636D6C7764476C76626A314552565A46544539515455564F56417042537A3033516B464551544931516B4E474E444E424D546B314F4468474E5467334D6B49784E6A45344D446B340A4F454535526A5244516A637743673D3D"
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: ingress-bws
+    app.kubernetes.io/name: ingress-bws
+    app.kubernetes.io/part-of: ingress-bws
+    app.kubernetes.io/version: 1.6.4
+  name: cm-bws-license
+  namespace: ingress-bws
+---
+apiVersion: v1
+data:
   allow-snippet-annotations: "true"
 kind: ConfigMap
 metadata:
@@ -354,11 +368,13 @@ spec:
     port: 80
     protocol: TCP
     targetPort: http
+    nodePort: 18080
   - appProtocol: https
     name: https
     port: 443
     protocol: TCP
     targetPort: https
+    nodePort: 18443
   selector:
     app.kubernetes.io/component: controller
     app.kubernetes.io/instance: ingress-bws
@@ -490,6 +506,9 @@ spec:
         - mountPath: /usr/local/certificates/
           name: webhook-cert
           readOnly: true
+        - mountPath: /opt/bes/bws/license/bws.lic.txt
+          name: bws-license
+          subPath: path/to/bws.lic.txt
       dnsPolicy: ClusterFirst
       nodeSelector:
         kubernetes.io/os: linux
@@ -499,6 +518,13 @@ spec:
       - name: webhook-cert
         secret:
           secretName: ingress-bws-admission
+      - name: bws-license
+        configMap:
+          name: cm-bws-license
+          defaultMode: 493
+          items:
+          - path: path/to/bws.lic.txt
+            key: bws-license
 ---
 apiVersion: batch/v1
 kind: Job
